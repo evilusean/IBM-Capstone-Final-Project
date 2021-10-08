@@ -1,0 +1,156 @@
+"""
+IBM Watson Studio:
+    https://cloud.ibm.com/catalog/services/watson-studio?utm_medium=Exinfluencer&utm_source=Exinfluencer&utm_content=000026UJ&utm_term=10006555&utm_id=NA-SkillsNetwork-Channel-SkillsNetworkCoursesIBMDA0321ENSkillsNetwork21426264-2021-01-01
+Jupyter Notebook Link:
+    https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/labs/module%201/Accessing%20Data%20Using%20APIs/Accessing_APIs_review_lab.ipynb
+
+Permalink to Notebook in Watson:
+https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/16c8eb5e-36f8-4e23-9c8d-f9044baa8b79/view?access_token=544ef784ef6e7612c194477fd59ce8ff26bcd48b5c7ee24c86a7355d4771f1c2
+
+Your assignment is to get the number of job openings using the GitHub Jobs API for technologies like:
+Java
+Python
+MySQL
+C++
+C#
+GitHub Jobs API allows anyone to query for the jobs based upon:
+
+Technology like Python, MySQL
+City like New York, Bangalore
+Here are the technical details to access the API.
+
+The GitHub Jobs API allows you to search, and view jobs with JSON over HTTP.
+
+To get the JSON representation of any search result or job listing, append .json to the URL you'd use on the HTML GitHub Jobs site.
+
+For example, below url will search for Python jobs near New York:
+
+https://jobs.github.com/positions?description=python&location=new+york
+
+To get the JSON representation of those jobs, just use positions.json:
+
+https://jobs.github.com/positions.json?description=python&location=new+york
+
+Pagination
+The API also supports pagination. /positions.json, for example, will only return 50 positions at a time. You can paginate results by adding a page parameter to your queries.
+
+Pagination starts by default at 0.
+
+Examples
+https://jobs.github.com/positions.json?description=ruby&page=1
+https://jobs.github.com/positions.json?page=1&search=code
+
+GET /positions.json
+Search for jobs by term, location, full time vs part time, or any combination of the three. All parameters are optional.
+
+Parameters
+description — A search term, such as "ruby" or "java". This parameter is aliased to search.
+location — A city name, zip code, or other location search term.
+lat — A specific latitude. If used, you must also send long and must not send location.
+long — A specific longitude. If used, you must also send lat and must not send location.
+full_time — If you want to limit results to full time positions set this parameter to 'true'.
+Examples
+https://jobs.github.com/positions.json?description=python&full_time=true&location=sf
+https://jobs.github.com/positions.json?search=node
+https://jobs.github.com/positions.json?lat=37.3229978&long=-122.0321823
+
+GET /positions/ID.json
+Retrieve the JSON representation of a single job posting.
+
+Parameters
+markdown — Set to 'true' to get the description and how_to_apply fields as Markdown.
+
+Examples
+https://jobs.github.com/positions/21516.json
+https://jobs.github.com/positions/21516.json?markdown=true
+"""
+import requests
+import os 
+from PIL import Image
+from IPython.display import IFrame
+
+#practice get request
+url='https://www.ibm.com/'
+r=requests.get(url)
+#200 = success
+r.status_code
+#view headers
+print(r.request.headers)
+#view body
+print("request body:", r.request.body)
+#print headers
+header=r.headers
+print(r.headers)
+#obtain the date the request was sent using the key Data
+header['date']
+#Content-Type indicates the type of data:
+header['Content-Type']
+#check the encoding
+r.encoding
+#As the Content-Type is text/html we can use the attribute text to display the HTML in the body. We can review the first 100 characters:
+r.text[0:100]
+
+
+#same process can be used for images
+# Use single quotation marks for defining string
+url='https://gitlab.com/ibm/skills-network/courses/placeholder101/-/raw/master/labs/module%201/images/IDSNlogo.png'
+#get request
+r=requests.get(url)
+#get headers
+print(r.headers)
+#content type
+
+#how tosave image
+#set path
+path=os.path.join(os.getcwd(),'image.png')
+path
+#save image
+with open(path,'wb') as f:
+    f.write(r.content)
+#view image
+Image.open(path)
+
+#new image same process
+#!wget -O /resources/data/Example1.txt https://s3-api.us-geo.objectstorage.softlayer.net/cf-courses-data/CognitiveClass/PY0101EN/labs/example1.txt
+url='https://s3-api.us-geo.objectstorage.softlayer.net/cf-courses-data/CognitiveClass/PY0101EN/labs/example1.txt'
+path=os.path.join(os.getcwd(),'example1.txt')
+r=requests.get(url)
+with open(path,'wb') as f:
+    f.write(r.content)
+
+
+#new url
+url_get='http://httpbin.org/get'
+#To create a Query string, add a dictionary. The keys are the parameter names, and the values are the value of the Query string
+payload={"name":"Joseph","ID":"123"}
+# passing the dictionary payload to the params parameter of the  get() function:
+r=requests.get(url_get,params=payload)
+#print the url and see names and values
+r.url
+#check request body
+print("request body:", r.request.body)
+#check status code
+print(r.status_code)
+#view the response as text:
+print(r.text)
+#look at the 'Content-Type'. its a json
+r.headers['Content-Type']
+#.json method returns a python dict
+r.json()
+#key args had the name and values:
+r.json()['args']
+
+
+#Post Request
+#Like a GET request a POST is used to send data to a server, but the POST request sends the data in a request body.
+url_post='http://httpbin.org/post'
+#To make a POST request we use the post() function, the variable payload is passed to the parameter  data 
+r_post=requests.post(url_post,data=payload)
+#Comparing the URL from the response object of the GET and POST request we see the POST request has no name or value pairs.
+print("POST request URL:",r_post.url )
+print("GET request URL:",r.url)
+#We can compare the POST and GET request body, we see only the POST request has a body:
+print("POST request body:",r_post.request.body)
+print("GET request body:",r.request.body)
+#We can view the form as well: 
+r_post.json()['form
