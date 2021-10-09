@@ -1,0 +1,143 @@
+"""
+Watson Lab Jupitor:
+    https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/3dece809-80bf-4caa-91f9-b67d911e0f51/view?access_token=e2dfc9912387e5589b5f2c85b915b4f1c065c33aa5e3685b6c93e63685fa8642
+Your assignment is to get the number of job openings using the GitHub Jobs API for technologies like:
+C
+C#
+C++
+Java
+JavaScript
+Python
+Scala
+Oracle
+SQL Server
+MySQL Server
+PostgreSQL
+MongoDB
+GitHub Jobs API allows anyone to query for the jobs based upon:
+
+Technology like Python, MySQL
+City like New York, Bangalore
+Here are the technical details to access the API.
+
+The GitHub Jobs API allows you to search, and view jobs with JSON over HTTP.
+
+To get the JSON representation of any search result or job listing, append .json to the URL you'd use on the HTML GitHub Jobs site.
+
+For example, below url will search for Python jobs near New York:
+
+https://jobs.github.com/positions?description=python&location=new+york
+
+To get the JSON representation of those jobs, just use positions.json:
+
+https://jobs.github.com/positions.json?description=python&location=new+york
+
+Pagination
+The API also supports pagination. /positions.json, for example, will only return 50 positions at a time. You can paginate results by adding a page parameter to your queries.
+
+Pagination starts by default at 0.
+
+Examples
+https://jobs.github.com/positions.json?description=ruby&page=1
+https://jobs.github.com/positions.json?page=1&search=code
+
+GET /positions.json
+Search for jobs by term, location, full time vs part time, or any combination of the three. All parameters are optional.
+
+Parameters
+description — A search term, such as "ruby" or "java". This parameter is aliased to search.
+location — A city name, zip code, or other location search term.
+lat — A specific latitude. If used, you must also send long and must not send location.
+long — A specific longitude. If used, you must also send lat and must not send location.
+full_time — If you want to limit results to full time positions set this parameter to 'true'.
+Examples
+https://jobs.github.com/positions.json?description=python&full_time=true&location=sf
+https://jobs.github.com/positions.json?search=node
+https://jobs.github.com/positions.json?lat=37.3229978&long=-122.0321823
+
+GET /positions/ID.json
+Retrieve the JSON representation of a single job posting.
+
+Parameters
+markdown — Set to 'true' to get the description and how_to_apply fields as Markdown.
+
+Examples
+https://jobs.github.com/positions/21516.json
+https://jobs.github.com/positions/21516.json?markdown=true
+"""
+#checks for astronauts on ISS in JSON format
+import requests # you need this module to make an API call
+api_url = "http://api.open-notify.org/astros.json" # this url gives use the astronaut data
+response = requests.get(api_url) # Call the API using the get method and store the
+                                # output of the API call in a variable called response.
+if response.ok:             # if all is well() no errors, no network timeouts)
+    data = response.json()  # store the result in json format in a variable called data
+                            # the variable data is of type dictionary.
+print(data)   # print the data just to check the output or for debugging
+#Print the number of astronauts currently on ISS.
+print(data.get('number'))
+#Print the names of the astronauts currently on ISS.
+astronauts = data.get('people')
+print("There are {} astronauts on ISS".format(len(astronauts)))
+print("And their names are :")
+for astronaut in astronauts:
+    print(astronaut.get('name'))
+
+
+#Jobs search API
+#Import required libraries
+
+#URL
+baseurl = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/labs/Capstone_edX/Module%201/githubposting.json"
+#Write a function to get the number of jobs for the given technology *Note:* The API gives a maximum of 50 jobs per page
+def get_number_of_jobs(technology):
+    number_of_jobs = 0
+    #your code goes here
+    return technology,number_of_jobs
+#print number of jobs for python
+print(get_number_of_jobs('python'))
+print(get_number_of_jobs('C'))
+print(get_number_of_jobs('C#'))
+print(get_number_of_jobs('C++'))
+print(get_number_of_jobs('JavaScript'))
+print(get_number_of_jobs('Java'))
+print(get_number_of_jobs('Python'))
+print(get_number_of_jobs('Scala'))
+print(get_number_of_jobs('Oracle'))
+print(get_number_of_jobs('SQL Server'))
+print(get_number_of_jobs('MySQL Server'))
+print(get_number_of_jobs('Postgre SQL'))
+print(get_number_of_jobs('MongoDB'))
+#append to new xml
+from openpyxl import Workbook        # import Workbook class from module openpyxl
+wb=Workbook()                        # create a workbook object
+ws=wb.active                         # use the active worksheet
+#add columns
+ws.append(['Technology','Number of Jobs'])   # add a row with two columns 'C' and 'Number of Jobs'
+ws.append(['C','Number of Jobs']) 
+ws.append(['C#','Number of Jobs'])        # add a row with two columns 'C#' and 'number_of_jobs'
+ws.append(['C++','Number of Jobs'])          # add another row
+ws.append(['Java','Number of Jobs'])       # add another row
+ws.append(['Java','Number of Jobs'])
+ws.append(['Javascript','Number of Jobs'])
+ws.append(['Python','Number of Jobs'])
+ws.append(['Scala','Number of Jobs'])
+ws.append(['Oracle','Number of Jobs'])
+ws.append(['SQL Server','Number of Jobs'])
+ws.append(['MySQL Server','Number of Jobs'])
+ws.append(['PostgreSQL','Number of Jobs'])
+ws.append(['MongoDB','Number of Jobs'])
+#save workbook
+wb.save("github-job-postings.xlsx")            # save the workbook into a file called get-job-postings.xlsx
+"""
+Create an XML:
+from openpyxl import Workbook        # import Workbook class from module openpyxl
+wb=Workbook()                        # create a workbook object
+ws=wb.active                         # use the active worksheet
+ws.append(['Country','Continent'])   # add a row with two columns 'Country' and 'Continent'
+ws.append(['Eygpt','Africa'])        # add a row with two columns 'Egypt' and 'Africa'
+ws.append(['India','Asia'])          # add another row
+ws.append(['France','Europe'])       # add another row
+wb.save("countries.xlsx")            # save the workbook into a file called countries.xlsx
+"""
+
