@@ -1,0 +1,34 @@
+#IBM Watson jupyter Notebook:
+    #https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/3912c841-1cee-4bfa-bfc4-546dddd8713e/view?access_token=04de5665ac3a9f1d862c41c8f6338d3934160f83766cc42ca3c7c976e04a8c73
+
+#this url contains the data you need to scrape
+url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/labs/datasets/Programming_Languages.html"
+#Import the required libraries
+# Your code here
+from bs4 import BeautifulSoup # this module helps in web scrapping.
+import requests  # this module helps us to download a web page
+import pandas as pd
+import numpy as np
+#Download the webpage at the url
+# get the contents of the webpage in text format and store in a variable called data
+data  = requests.get(url).text
+#create soup object
+#your code goes here
+soup = BeautifulSoup(data,"html5lib")  # create a soup object using the variable 'data'
+#Scrape the Language name, Created By annual average salaryand Learning Difficulty.
+#find a html table in the web page
+table = soup.find('table') # in html table is represented by the tag <table>
+#Create a dataframe for scrapped data
+# Get all ro#ws from the table
+language_list = []
+for row in table.find_all('tr'): # in html table row is represented by the tag <tr>
+    # Get all columns in each row.
+    cols = row.find_all('td') # in html a column is represented by the tag <td>
+    language = cols[1].getText() # store the value in column 3 as language_name
+    salary = cols[3].getText() # store the value in column 4 as annual_average_salary
+    language_list.append([language,salary])
+
+#Save the scrapped data into a file named popular-languages.csv
+# save as csv:
+filename = "popular-languages.csv"
+df_lang.to_csv(filename)
