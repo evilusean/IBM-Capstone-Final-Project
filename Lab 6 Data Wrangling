@@ -1,0 +1,89 @@
+"""
+IBM Watson Jupyter Notebook:
+    https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/6993131f-c6dc-406d-8c85-cc163c3d98dd/view?access_token=ff7e04876085f10bb23cf4b0fb3475509e50ad757cf47a35c5e9538902392089
+"""
+import pandas as pd
+import numpy as np
+#Load the dataset into a dataframe.
+df = pd.read_csv("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/LargeData/m1_survey_data.csv")
+#find duplicates
+print('There are', df.duplicated().sum(), 'duplicate rows.')
+print('There are', df.duplicated('Respondent').sum(), 'duplicate Respondants.')
+#remove duplicates
+df.drop_duplicates(inplace=True)
+df.shape
+#check to see if duplicates are removed
+print('There are now', df.duplicated().sum(), 'duplicate rows.')
+print('There are', df.duplicated('Respondent').sum(), 'duplicate Respondants.')
+#find missing values (null)
+with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    print(df.isnull().sum())
+#print out how many missing values in"WorkLoc' 'Edlevel' 'Country' 
+print("There are", df['WorkLoc'].isnull().sum(), "missing values in the column 'WorkLoc'")
+print("There are", df['EdLevel'].isnull().sum(), "missing values in the column 'EdLevel'")
+print("There are", df['Country'].isnull().sum(), "missing values in the column 'Country'")
+#Findinging the value counts for WorkLoc-pretty
+print('There are', df['WorkLoc'].nunique(), 'unique Work Locations in the survey:')
+
+print('\nWorkLoc                                    value count')      
+print('-------                                    -----------')
+print(df['WorkLoc'].value_counts())
+
+print('\n\nThere are', df['Employment'].nunique(), 'unique Employment values in the survey:')
+
+print('\nEmployment        value count')      
+print('----------        -----------')
+print(df['Employment'].value_counts())
+
+print('\n\nThere are', df['UndergradMajor'].nunique(), 'unique UndergradMajor values in the survey:')
+
+print('\nUndergradMajor        value count')      
+print('---------------        -----------')
+print(df['UndergradMajor'].value_counts())
+"""
+WorkLoc                                    value count
+-------                                    -----------
+Office                                            6806
+Home                                              3589
+Other place, such as a coworking space or cafe     971
+Most common workplace is Office: 6806
+"""
+#Converted Compensation
+#Mean:131596.7316197316
+#Median: 57745.0
+print(df['ConvertedComp'].mean())
+print(df['ConvertedComp'].median())
+#Impute (replace) all the empty rows in the column WorkLoc with the value that you have identified as majority.
+workloc_highest = 'Office'
+
+missing_data = df.isnull()
+#print(missing_data.head(5))
+
+#value counts for missing
+print('\nValue counts for missing data in WorkLoc:\n')
+print( missing_data['WorkLoc'].value_counts())
+
+#10 first rows of missing
+print('\nHere are the first 10 rows missing values for WorkLoc:')
+print(df[missing_data['WorkLoc']][['Respondent','WorkLoc']].head(10))
+#replace missing
+df['WorkLoc'].replace(np.nan, workloc_highest, inplace=True)
+#Verify if imputing was successful.
+print('\nNew value counts for missing data in WorkLoc:\n')
+print(missing_data['WorkLoc'].value_counts())
+# No 'True' values means that we have eliminated all empty WorkLoc values.
+
+#List various categories and count of 'CompFreq"
+print(df['CompFreq'].value_counts())
+
+#Create a new column named 'NormalizedAnnualCompensation'. Use the hint given below if needed.
+#Yearly, 12 months in a year, 52 weeks in a year
+df.loc[df['CompFreq'] == 'Yearly', 'NormalizedAnnualCompensation']  = 1  * df['CompTotal']
+df.loc[df['CompFreq'] == 'Monthly', 'NormalizedAnnualCompensation'] = 12 * df['CompTotal']
+df.loc[df['CompFreq'] == 'Weekly', 'NormalizedAnnualCompensation']  = 52 * df['CompTotal']
+
+
+df[['CompTotal','CompFreq','NormalizedAnnualCompensation']].head(20)
+
+df['NormalizedAnnualCompensation'].median()
+#100000.0
