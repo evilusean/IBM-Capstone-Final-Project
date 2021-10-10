@@ -1,0 +1,79 @@
+"""
+Watson Lab Jupyter Notebook:
+    https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/6744feb4-d77d-4ee2-90ad-39d52eeb78bd/view?access_token=43af43745c2332cc668f66b30115dc1c24de86753cfe2c05f06ff39a27e532df
+"""
+import pandas as pd
+df = pd.read_csv("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/labs/Capstone_edX/Module%201/survey_results_public_2020.csv")
+#Find how many duplicate rows exist in the dataframe.
+#Find how many duplicate rows exist in the dataframe.
+df.duplicated(keep='first').sum()  
+#Show duplicated rows
+duplicateRows = df[df.duplicated()]  
+duplicateRows  
+#numbers of duplicate values in the column Respondent
+df["Respondent"].duplicated(keep='first').sum()  
+
+#Removing Duplicates
+#Remove the duplicate rows from the dataframe.
+df.drop_duplicates(ignore_index=True, inplace=True)  
+#Verify if duplicates were actually dropped.
+df.duplicated(keep='first').sum()  
+#number of rows and columns left
+df.shape  
+#numbers of unique rows left in the column Respondent
+df["Respondent"].nunique  
+
+#Recheck
+#Find how many duplicate rows exist in the dataframe.
+df.duplicated(keep='first').sum()  
+#Show duplicated rows
+duplicateRows = df[df.duplicated()]  
+duplicateRows  
+#numbers of duplicate values in the column Respondent
+df["Respondent"].duplicated(keep='first').sum()  
+
+#Finding Missing Values:
+#Find the missing values for all columns.
+df.isnull().sum()  
+#replace all missing with median:
+#df.fillna(df.median())
+
+#for edlevel
+# your code goes here
+#Find out how many rows are missing in the column EdLevel
+df["EdLevel"].isnull().sum()  
+
+
+#Find missing value for age column
+df['Age'].value_counts()
+#find median Age
+df['Age'].median()
+
+#Impute(replace) with the median
+impute_median=df['Age'].median()
+df['Age']=df['Age'].fillna(impute_median)
+
+#find most frequent in Country Column
+df['Country'].value_counts().idxmax()
+
+#removes ALL missing data from dataset
+# removes all Na from dataset
+df.dropna()
+
+
+#Normalizing Data:
+#List out the various categories in the column 'CompFreq'
+df["CompFreq"].unique()
+
+#Shows median annualized compensation after calculation: 104000.0
+#If the CompFreq is Yearly then use the exising value in CompTotal
+df["CompFreq"].replace(to_replace="Yearly",value=1,inplace=True)  
+#If the CompFreq is Monthly then multiply the value in CompTotal with 12 (months in an year)
+df["CompFreq"].replace(to_replace="Monthly",value=12,inplace=True)  
+#If the CompFreq is Weekly then multiply the value in CompTotal with 52 (weeks in an year)
+df["CompFreq"].replace(to_replace="Weekly",value=52,inplace=True)  
+df["CompFreq"].unique()
+df["CompFreq"].value_counts()
+#it makes comparison of salaries easy.
+df['NormalizedAnnualCompensation'] = df["CompTotal"] * df["CompFreq"]  
+df['NormalizedAnnualCompensation'].median()
