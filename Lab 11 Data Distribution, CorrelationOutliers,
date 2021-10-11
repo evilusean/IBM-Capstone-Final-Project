@@ -1,0 +1,68 @@
+"""Watson Lab Jupyter Notebook:
+    https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/74dbe872-1bd2-47c8-8ef6-706a7bd3fe93/view?access_token=af9aad70a6d2b6a4aa573228c7ca787a5635c3cee30d4b199f12226733a31ea8
+"""
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns
+#get dataset
+df = pd.read_csv("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/LargeData/m2_survey_data.csv")
+
+#creates a distribution plot of Converted Compensation
+plt.figure(figsize=(10,5))
+sns.displot(a=df["ConvertedComp"],bins=20,hist=False)
+plt.show()
+
+#Plot the histogram for the column ConvertedComp
+df['ConvertedComp'].plot.hist(bins=12, alpha=0.5)
+
+#gets the median
+df["ConvertedComp"].median()
+
+#how many responded identify as male
+df["Gender"].value_counts()
+
+#Find out the median ConvertedComp of responders identified themselves only as a Woman?
+woman = df[df["Gender"] == "Woman"]
+woman["ConvertedComp"].median()
+
+#Give the five number summary for the column Age?
+#min,q1,median,q3,max of a column are its five number summary.
+df["Age"].describe()
+
+#Plot a histogram of the column Age.
+df['Age'].plot.hist(bins=20, alpha=0.5)
+
+#Find out if outliers exist in the column `ConvertedComp` using a box plot
+sns.boxplot(x=df["ConvertedComp"])  
+
+#Find out the Inter Quartile Range for the column ConvertedComp
+df['ConvertedComp'].describe()
+
+Q1 = df['ConvertedComp'].quantile(0.25)
+Q3 = df['ConvertedComp'].quantile(0.75)
+IQR = Q3 - Q1
+print('The middle quartiles for ConvertedComp range from',Q1, 'to',Q3,'. The interquartile range is',IQR)
+
+#Find out the upper and lower bounds.
+min_val = df['ConvertedComp'].min()
+max_val = df['ConvertedComp'].max()
+print('The min/max for ConvertedComp are',min_val, 'and', max_val)
+
+#Identify how many outliers are there in the ConvertedComp column.
+#It's an outlier if it is less than: Q1 - 1.5 * IQR. or if it is greater than: Q3 + 1.5 * IQR
+print('Outliers below:',df['ConvertedComp'].lt(Q1 - 1.5*IQR).sum())
+print('Outliers above:',df['ConvertedComp'].gt(Q3 + 1.5*IQR).sum())
+print('Outliers below:',df['ConvertedComp'].lt(Q1 - 1.5*IQR).sum())
+print('Median with outliers:',df['ConvertedComp'].median())
+print('Median with outliers removed:',df[df['ConvertedComp'].le(Q3 + 1.5*IQR)]['ConvertedComp'].median())
+print('Mean with outliers removed:',df[df['ConvertedComp'].le(Q3 + 1.5*IQR)]['ConvertedComp'].mean())
+
+#Create a new dataframe by removing the outliers from the ConvertedComp column.
+RemoveConvertedcomp = df[~(df["ConvertedComp"] > (Q3 + 1.5 * IQR))]
+RemoveConvertedcomp.head()
+#RemoveConvertedcomp["ConvertedComp"].median()
+#RemoveConvertedcomp["ConvertedComp"].mean()
+
+#Find the correlation between Age and all other numerical columns.
+df.corr()
