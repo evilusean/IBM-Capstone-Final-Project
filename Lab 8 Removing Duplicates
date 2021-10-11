@@ -1,0 +1,64 @@
+"""
+Watson Jupyter Notebook:
+    https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/fdf7e2f2-0d59-4ab9-831c-17a901b5a9b3/view?access_token=cdf415f96f01888241765e95776f58040f8d91e5ad7c34fef3fa00d7cf9e7755
+"""
+import pandas as pd
+import numpy as np
+
+#load dataset into dataframe
+df = pd.read_csv("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/labs/Capstone_edX/Module%201/survey_results_public_2020.csv")
+#finding duplicates
+print('There are', df.duplicated().sum(), 'duplicate rows.')
+print('There are', df.duplicated('Respondent').sum(), 'duplicate Respondants.')
+#removing duplicates
+df.drop_duplicates(inplace=True)
+#verify drop
+df.shape
+#finding missing values for all columns
+with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    print(df.isnull().sum())
+#find unique Value counts for Age
+print('There are', df['Age'].nunique(), 'unique Age in the survey:')
+
+print('\nAge                                  value count')      
+print('-------                                    -----------')
+print(df['Age'].value_counts())
+#Find the Median: 29
+print(df['Age'].median())
+
+
+#impute(replace) empty for median age
+import numpy as np
+medianAge = 29
+missing_data = df[df['Age'].isnull()]
+#print(missing_data.head(5))
+
+#print('\nValue counts for missing data in Age:\n')
+#print(missing_data['Age'].value_counts())
+
+df['Age'] = df['Age'].replace(np.nan, medianAge, inplace=True)
+#check data for change
+#print(missing_data)
+
+
+#find most common country
+print('There are', df['Country'].nunique(), 'unique Countries in the survey:')
+
+print('\nCountry                                    value count')      
+print('-------                                    -----------')
+print(df['Country'].value_counts())
+
+#Drop all the missing values from the dataset
+df.dropna()
+
+#List out the various categories in the column 'CompFreq'
+print(df['CompFreq'].value_counts())
+#Create a new column named 'NormalizedAnnualCompensation'. Use the hint given below if needed.
+df.loc[df['CompFreq'] == 'Yearly', 'NormalizedAnnualCompensation']  = 1  * df['CompTotal']
+df.loc[df['CompFreq'] == 'Monthly', 'NormalizedAnnualCompensation'] = 12 * df['CompTotal']
+df.loc[df['CompFreq'] == 'Weekly', 'NormalizedAnnualCompensation']  = 52 * df['CompTotal']
+
+
+df[['CompTotal','CompFreq','NormalizedAnnualCompensation']].head(20)
+
+df['NormalizedAnnualCompensation'].median()
